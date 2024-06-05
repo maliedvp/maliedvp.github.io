@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Documentation</title>
+    <style>
+        body {
+            font-family: 'PT Sans', sans-serif;
+        }
+        code {
+            background-color: #001626;
+            color: #fefefd;
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+        a {
+            color: #425f73;
+        }
+    </style>
+</head>
+<body>
+
+<h2><code>companies.csv</code></h2>
+<ul>
+    <li>Panel variables
+        <ul>
+            <li><code>company_id_harm</code>: Firm Panel-ID</li>
+            <li><code>company_id_harm</code>: Number of observations per Panel ID</li>
+            <li><code>year</code>: Year variable</li>
+        </ul>
+    </li>
+    <li>Organization variables
+        <ul>
+            <li><code>company_id</code>: the (stable) identifier for a firm-year observation. It is stable in the sense that if the data generation process is restarted (using the existing OCR input), each firm will always receive the same ID.</li>
+            <li><code>company_name</code>: The firm's name as extracted from the OCR input.</li>
+            <li><code>oai_identifier</code>: The OAI (Open Archives Initiatives) identifier of the hard copy from which this information is taken.</li>
+            <li><code>volume</code>: The volume of the <strong>Handbuch der Deutschen Aktiengesellschaften</strong> the information stems from.</li>
+            <li><code>edition</code>: The edition of the <strong>Handbuch der Deutschen Aktiengesellschaften</strong> the information relates to.</li>
+            <li><code>view_line</code>: A link through which the digitized scan of the original source can be accessed. Note that the user might have to be logged into the Goethe University VPN to access the link.</li>
+            <li><code>pdf_page_num_start</code>: The page number (of the PDF not the book) the firm entry starts.</li>
+            <li><code>line_ref_start</code>: A firm's first line number (per page) as identified by the OCR. Enables better sorting.</li>
+        </ul>
+    </li>
+    <li>Content variables
+        <ul>
+            <li><code>company_info_1</code>: Some companies have additional information provided (e.g., liquidation, addresses) before the actual variables start (<a href="https://compute.safe-frankfurt.de/view_line.html?image=https://digi.bib.uni-mannheim.de/fileadmin/hoppenstedt/1006345701_191100152/max/1006345701_1115.jpg&width=2544&height=3932&x1=2240&x2=115&y1=1235&y2=1142&xsize=93.0">Zweigniederlassung in Bautzen</a> is an example). Such information is stored in this variable. Note that, depending on the layout, it might also be stored in <em>company_info_2</em>.</li>
+            <li><code>company_info_2</code>: Some companies have additional information provided (e.g., liquidation, addresses) before the actual variables start (<a href="https://compute.safe-frankfurt.de/view_line.html?image=https://digi.bib.uni-mannheim.de/fileadmin/hoppenstedt/1006345701_191100152/max/1006345701_1115.jpg&width=2544&height=3932&x1=2240&x2=115&y1=1235&y2=1142&xsize=93.0">Zweigniederlassung in Bautzen</a> is an example). Such information is stored in this variable. Note that, depending on the layout, it might also be stored in <em>company_info_2</em>.</li>
+            <li><code>liquidation_dum</code>: Dummy that is 1 if a company is bankrupt or dissolved and 0 otherwise. Note that such companies are sometimes included in the original source.</li>
+            <li><code>industry</code>: Refers to the (un-harmonized) industry of a firm as indicated by the ToC in the <strong>Handbuch der Deutschen Aktiengesellschaften</strong>.</li>
+            <li><code>industry_nace</code>: NACE classification Section based on mapping of values from column <code>industry</code>.</li>
+            <li><code>foundation_year_harm</code>: The harmonized year in which the company was established. (see for <a href="#purpose">Section</a> for the meaning of <strong>harmonized</strong>)</li>
+            <li><code>age</code>: Indicated a firm's age in a given year. It is calculated by subtracting <em>foundation_year_harm</em> from <em>year</em>. Note that this variable primarily relies on the year given in the variable <em>found_date</em> (see below). However, if this date is not available, another stated date is used for reference.</li>
+            <li><code>*_dates</code>: The versions of the variables ending on <em>date</em> correspond to either the stated foundation date, the date the foundation became effective or when the firm was registered in the <em>Handelsregister</em>, the date it received its concession or was transformed into a joint-stock company.</li>
+            <li><code>city_name_pos</code>: Indicates the number of the character included in a string, from which a firm's city is inferred.</li>
+            <li><code>match_column</code>: States the variable from which a firm's location is inferred (can either be <em>company_name</em>, <em>company_info_1</em>, or <em>company_info_2</em>)</li>
+            <li><code>match_position</code>: a tuple indicating the start</li>
+            <li><code>city_name</code>: the extracted name of the municipality. It can result from two different approaches: 1. regex of <code>gemeindename</code> as stored in the geographics layer, or 2. words following 'in', 'bei', etc.</li>
+            <li><code>rank</code>: TO BE FILLED</li>
+            <li><code>city_id</code>: The unique ID of a city, in which the firm is supposedly located as defined by <a href="https://github.com/maliedvp/safe_hdb_geographics">safe_hdb_geographics</a>.</li>
+            <li><code>longitude</code>: longitude of city in which company is located</li>
+            <li><code>latitude</code>: latitude of city in which company is located</li>
+            <li><code>citizens_1910</code>: The number of people residing in the city we assume the firm to be located. The source of this information is explained in <a href="https://github.com/maliedvp/safe_hdb_geographics">safe_hdb_geographics</a> as well.</li>
+            <li><code>gemeindename</code>: The name of the city of which we think represents the HQ of a firm. Based on linkages between <code>city_name</code> and <code>gemeindename</code> in <a href="https://github.com/maliedvp/safe_hdb_geographics">safe_hdb_geographics</a>. If <code>gemeindename</code> is missing even though <code>city_name</code> exists, it implies that the extracted <code>city_name</code> is not included in <a href="https://github.com/maliedvp/safe_hdb_geographics">safe_hdb_geographics</a>. Manual addition to <code>res/city_add.xlsx</code> necessary</li>
+            <li><code>kreisname</code>: The name of the county, in which a company's HQ is.</li>
+            <li><code>bezirk</code>: The name of the district, in which a company's HQ is.</li>
+            <li><code>provinz</code>: The name of the province, in which a company's HQ is given this is somewhere in the former state of Prussia. Other states were not divided into provinces.</li>
+            <li><code>land</code>: The name of the state where a company's HQ is located.</li>
+            <li><code>bs_item_id</code>: The unique ID of the balance sheet item as used by the <em>derived layer</em>. Also this ID is stable when repeating the data extraction process.</li>
+            <li><code>bs_text</code>: The unparsed string representations of the balance sheet item as extracted from the OCR.</li>
+            <li><code>bs_date</code>: The date to which the balance sheet refers to. This date is typically stated at the beginning of the balance sheet as can be seen in <code>bs_text</code> variable.</li>
+            <li><code>bs_cash</code>: Indicates the total amount of cash a firm holds also accounting for checking accounts. It is defined as the sum of the balance sheet items' values, which contain the following regular expression <code>r'KASS[AE]|GUTH|GIRO|BANKNOTEN|BAR|NOTEN|SICHT|FABRIKKTO|BANKKTO'</code>. Note that some cash-related items might not be covered by this regex, indicating that the cash position might be underestimated.</li>
+            <li><code>bs_cash_ratio</code>: Equals the cash position divided by the total balance sheet sum.</li>
+            <li><code>bs_ppe</code>: Total value of balance sheet items that belong to the class Property Plant and Equipment (PPE). The regex used is <code>r'GEBAEUDE|IMMO|WERK|HALLE|FUHR|AUTOM|KUTSCHE|HAE?US|GRUND[SB]|MASCH|BAUTEN|MOBIL|FABR|ANLAGE|APPAR?A?T?|UNBEW|UTENSIL|EINRICHT|EQUIP'</code>.</li>
+            <li><code>bs_ppe_ratio</code>: <code>bs_ppe</code> divided by total assets (i.e., balance sheet sum)</li>
+            <li><code>bs_patent</code>: Sum of balance sheet items on the asset side, that contain 'PATENT'</li>
+            <li><code>bs_patent_ratio</code>: <code>bs_patent</code> divided by a firm's total assets</li>
+            <li><code>bs_equity</code>: A firm's equity. The approach is equal to the one explained for <code>bs_cash</code>. The corresponding regular expression is <code>r'A-K|^AK\s|AKTIEN|STAMMKAPITAL|VORZ|EINGEZAHLT'</code>. Note that retained earnings are not included in this definition. This is because accounting departments used the labels <em>Rücklagen</em> and <em>Rückstellungen</em> interchangeably. Thus, if we included retained earnings (<em>Rücklagen</em>) we might also cover a fraction of a firm's debt.</li>
+            <li><code>bs_equity_ratio</code>: Equals the total equity as defined in <code>bs_equity</code> divided by total assets.</li>
+            <li><code>bs_sum</code>: A firm's total assets (i.e. total liabilities) Note that (and that is the case for whenever a sum of a balance sheet or profit and loss statement is referred to) the sum value always i) corresponds to correct values, and ii) if no values exist we can consider to be correct (every sum has a different value) the <em>stated</em> sum is taken as this one is less prone to OCR errors (very short string).</li>
+            <li><code>bs_sum_correct_i</code>: Dummy(s) indicating whether the identified sum is correct. This is done comparing the stated value of total assets with the calculated value of total assets and liabilities. If two at least two of them are equal (i.e., do not vary by more than 0.1 percent (i =_0), 1 percent (i = _1), or 5 percent (i = _2)), we assume to know the true value.</li>
+            <li><code>pl_text</code>: The unparsed string representations of the profit and loss statement as extracted from the OCR.</li>
+            <li><code>pl_verlust</code>: The stated (gross) profit if it is negative. The extraction approach relies on the regular expression <code>r'VERLUST?|ERGEBNIS|ERTRAG'</code> that is only used for <em>Kredit</em> items. If an item includes the regexes <code>r'EFFEKTEN|KURS|GRUNDSTUECK|BETEILIG|VERKAUF|DISKONTO|VERAUSS?'</code> or <code>r'VORTA?G?'</code> it, however, is not a (gross) loss item. Note that a profit and loss statement follows the conventions used for balance sheets (two-sided bookkeeping)</li>
+            <li><code>pl_verlustvortrag</code>: Loss carryforward from the previous period.</li>
+            <li><code>pl_gewinn</code>: The stated (gross) profit if it is positive. The corresponding regex is <code>r'GEWINN?|ERGEBNIS|ERTRAG'</code> used for <em>Debet</em> items. Moreover, the following regex must not be included in an item's name for it to be the (gross profit) <code>r'EFFEKTEN|KURS|GRUNDSTUECK|BETEILIG|VERKAUF|DISKONTO|VERAUSS?'</code> and <code>r'VORT'.</code></li>
+            <li><code>pl_gewinnvortrag</code>: Profit carryforward from the previous period. It, again, uses regex. To see the actual regexes and rules used for all balance sheet or profit and loss statement positions, please look up the class <code>Financials_figures</code> stored in <code>parsing.py</code>.</li>
+            <li><code>pl_profit</code>: (net) profit. It equals <code>pl_verlust</code>+ <code>pl_gewinn</code> - <code>pl_gewinnvortrag</code>+ <code>pl_verlustvortrag</code>. For details on the logic, see the file <a href="#pl_mechanics">Profit and Loss Statement Mechanics</a>.</li>
+            <li><code>pl_zinsen</code>: total number of interest paid. Note this is only different from zero if there exists an item that is caught by the regex <code>r'^ZINSE?N?$|^ZS$'</code>. If <em>ZINSEN</em> are part of a mixed item (with other items), the indicated value is zero.</li>
+            <li><code>pl_sum*</code>: all the variables follow a similar logic compared to their <code>bs_sum*</code> equivalents. Refer to those for further information.</li>
+            <li><code>fin_roa</code>: Return-on-Assets defined as <code>pl_profit</code>/<code>bs_sum</code></li>
+            <li><code>zs</code>: String representation of parsed <em>Zahlstellen</em></li>
+            <li><code>zs_item_id</code>: The unique ID of the <em>Zahlstellen</em> item as used by the <em>derived layer</em>. Also this ID is stable when repeating the data extraction process.</li>
+            <li><code>zs_gb_[1-8]</code>: Dummy which is 1 if a company has a paying agency at the Great Bank 1: <em>Deutsche Bank</em>, 2: <em>Dresdner Bank</em>, 3: 'Disconto-Gesellschaft', 4: <em>Bank für Handel and Darmstädter Bank</em>, 5: <em>Berliner Handels-Gesellschaft</em>, 6: <em>Commerzbank</em>, 7: <em>Nationalbank für Deutschland</em>, 8: <em>Schaaffhausener Bankverein</em></li>
+            <li><code>zs_gb_count</code>: Number of distinct Great Banks connected to via the <em>paying agencies</em></li>
+            <li><code>zs_gb_dum</code>: Dummy which is 1 if a company is connected to Great Bank via the <em>paying agency</em> item</li>
+            <li><code>zs_total_count</code>: Total Number of distinct paying agencies (identified by the number of the character ';' in the <em>paying agency</em> item)</li>
+        </ul>
+    </li>
+</ul>
+
+<h2><code>persons.csv</code></h2>
+<ul>
+    <li>Panel variables
+        <ul>
+            <li><code>person_id_global</code>: Person Panel-ID that tracks a person over time <em>and</em> across companies. Note that the model is calibrated in a way resulting in more false positives than false negatives. When working with this ID the commonality of a name has to be taken into account. This information can be taken from external sources.</li>
+            <li><code>year</code>: Year variable</li>
+        </ul>
+    </li>
+    <li>Organizational variables:
+        <ul>
+            <li><code>person_id_firm</code>: Person ID for a human being within one specific company</li>
+            <li><code>person_id</code>: unique ID for a (person-year) observation.</li>
+            <li><code>company_id_harm</code>: Firm Panel-ID the person belongs to.</li>
+            <li><code>company_id</code>: The (stable) identifier for a firm-year observation. It is included so that <code>1:m</code> matches between <code>companies.csv</code> and <code>persons.csv</code> are possible.</li>
+            <li><code>name_orig</code>: Raw name representation of a person as extracted from the OCR.</li>
+            <li><code>name_family</code>: parsed last (i.e., family) name.</li>
+            <li><code>name_family_von</code>: Dummy indication whether a person's last name is accompanied by "von".</li>
+            <li><code>given_name_first</code>: First (given) name.</li>
+            <li><code>given_name_second</code>: Second (given) name.</li>
+            <li><code>profession</code>: parsed (but unmapped) profession of a person. If multiple professions are stated, they are divided by <code>|</code>. The parsing relies on a list with regular expressions.</li>
+            <li><code>profession_inactive</code>: Dummy indication if a person is a <em>retired</em> public servant (i.e., has <em>a.D.</em> aside his professions).</li>
+            <li><code>chair</code>: Categorial variable, where 1 (2) indicates that a person was a board's first (second) chairman. The indicates being a third chairman. 10 (11) refers to someone being a(vize) <em>president</em>.</li>
+            <li><code>phd</code>: Categorial variable: 1: Dr. (without anything stated); 2: Dr. jur.; 3: Dr. med; 4: Dr. agr.; 5: Dr. oec.; 6: Dr. paed; 7: Dr. pharm.; 8: Dr. phil.; 9: Dr. rer.; 10: Dr. sc.; 11: Dr. theol.; 12: Dr. ing; 20: Dr. habil.; 21: Dr. e.h.</li>
+            <li><code>prof</code>: Dummy indication whether someone is a <em>professor</em></li>
+            <li><code>nobility</code>: string variable that is not empty if a person holds a noble title. The values represent the type of the title (e.g., <em>Freiherr</em>,<em>Graf</em>, etc.). Note that <em>König</em> currently leads to many false positive indication of someone being a nobleman as this is also a common family name.</li>
+            <li><code>city_id_max</code>: The unique ID of a city, in which the person resides (if nothing stated the person resides in the municipality the company is located in).</li>
+            <li><code>city</code>: name of the city that corresponds to the <code>city_id_max</code>.</li>
+            <li><code>item_type</code>: Categorial variable indicating the type of board through which a person is affiliated with a company: 105: procurists (Prokuristen); 106: management board (Vorstand/Direktorium); 107: supervisory board (Aufsichtsrat)</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>
