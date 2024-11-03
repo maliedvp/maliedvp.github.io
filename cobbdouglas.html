@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cobb-Douglas Surface with Toggle Buttons and Curve Density Slider</title>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        #buttons {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: #4CAF50; /* Default green color */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button.toggled {
+            background-color: #f44336; /* Red color when toggled */
+        }
+        #sliderContainer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+        }
+        input[type="range"] {
+            width: 200px;
+        }
+        #cameraInfo {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: white;
+            font-size: 14px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <div id="buttons">
+        <button id="surfaceButton" onclick="toggleElement(surface, 'surfaceButton')">Nutzenfunktion</button>
+        <button id="curvesButton" onclick="toggleElement(curves, 'curvesButton')">Indifferenzkurven</button>
+        <button id="boxButton" onclick="toggleElement(boundingBox, 'boxButton')">Quader</button>
+        <button id="arrowsLabelsButton" onclick="toggleElement(arrowsAndLabels, 'arrowsLabelsButton')">Arrows & Labels</button>
+        <button id="wallButton" onclick="toggleElement(wall, 'wallButton')">Budgetrestriktion</button> <!-- New Wall Button -->
+    </div>
+    <div id="sliderContainer">
+        <label for="densitySlider">Curve Density: </label>
+        <input id="densitySlider" type="range" min="1" max="20" value="10" oninput="updateCurveDensity(this.value)">
+    </div>
+    <div id="cameraInfo"></div>
+    <div id="levelsDisplay" style="position: absolute; top: 40px; left: 10px; color: white;"></div>
+    <script>
+        // Basic setup
+        const container = document.getElementById('container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Camera position
+        camera.position.set(0, 0, 15);
+        camera.up.set(0, 0, 1); // Set Z-axis as the up direction
+        camera.lookAt(0, 0, 0);
+
+        // OrbitControls setup
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        // Cobb-Douglas parameters
+        const alpha = 0.5;
+        const beta = 0.5;
+        const size = 5;
+        const segments = 100;
+        const vertices = [];
+        const colors = [];
+        const indices = [];
+
+        // Create vertices and colors for the Cobb-Douglas surface
+        let maxZ = 0;
+        const grid = [];
+        for (let i = 0; i <= segments; i++) {
+            grid[i] = [];
+            for (let j = 0; j <= segments; j++) {
+                const x = (i / segments) * size;
+                const y = (j / segments) * size;
+                const z = Math.pow(x, alpha) * Math.pow(y, beta);
+                vertices.push(x, y, z);
+                grid[i][j] = { x, y, z };
+                if (z > maxZ) maxZ = z;
+            }
+        }
+
+        // Normalize z values for color mapping
+        for (let i = 0; i < vertices.length; i += 3) {
+            const z = vertices[i + 2];
+            const normalizedZ = z / maxZ;
+            const r = normalizedZ;
+            const g = 0;
+            const b = 1 - normalizedZ;
+            colors.push(r, g, b);
+        }
+
+        // Create indices for the surface
+        for (let i = 0; i < segments; i++) {
+            for (let j = 0; j < segments; j++) {
+                const a = i * (segments + 1) + j;
+                const b = i * (segments + 1) + (j + 1);
+                const c = (i + 1) * (segments + 1) + j;
+                const d = (i + 1) * (segments + 1) + (j + 1);
+                indices.push(a, b, c, b, d, c);
+            }
+        }
+
+        // Create the custom geometry
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        geometry.setIndex(indices);
+        geometry.computeVertexNormals();
+
+        // Create a material with vertex colors and make it visible from both sides
+        const material = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide });
+        const surface = new THREE.Mesh(geometry, material);
+        surface.renderOrder = 1; // Render this first
+        surface.visible = false; // Initially hide the surface
+        scene.add(surface);
+
+        // Function to draw indifference curves
+        let curves = new THREE.Group();
+
+        function drawIndifferenceCurves(levels) {
+            curves.clear(); // Clear existing curves
+
+            levels.forEach(level => {
+                const curveVertices = [];
+
+                // Loop through the grid and find intersections along the level
+                for (let i = 0; i < segments; i++) {
+                    for (let j = 0; j < segments; j++) {
+                        const { x: x1, y: y1, z: z1 } = grid[i][j];
+                        const { x: x2, y: y2, z: z2 } = grid[i + 1][j];
+                        const { x: x3, y: y3, z: z3 } = grid[i][j + 1];
+
+                        // Interpolate along x-direction
+                        if ((z1 <= level && z2 >= level) || (z1 >= level && z2 <= level)) {
+                            const t = (level - z1) / (z2 - z1);
+                            const x = x1 + t * (x2 - x1);
+                            const y = y1;
+                            curveVertices.push(new THREE.Vector3(x, y, level));
+                        }
+
+                        // Interpolate along y-direction
+                        if ((z1 <= level && z3 >= level) || (z1 >= level && z3 <= level)) {
+                            const t = (level - z1) / (z3 - z1);
+                            const x = x1;
+                            const y = y1 + t * (y3 - y1);
+                            curveVertices.push(new THREE.Vector3(x, y, level));
+                        }
+                    }
+                }
+
+                // Filter out duplicate vertices to ensure smooth curves
+                const uniqueVertices = Array.from(new Set(curveVertices.map(v => `${v.x},${v.y},${v.z}`)))
+                    .map(str => {
+                        const [x, y, z] = str.split(',').map(Number);
+                        return new THREE.Vector3(x, y, z);
+                    });
+
+                // Create geometry and line for the curve
+                const curveGeometry = new THREE.BufferGeometry().setFromPoints(uniqueVertices);
+                const curveMaterial = new THREE.LineBasicMaterial({
+                    color: 0xffffff,
+                    linewidth: 2,
+                    depthTest: false // Disable depth testing for the curves
+                });
+                const curve = new THREE.Line(curveGeometry, curveMaterial);
+                curve.renderOrder = 2; // Render this after the surface
+                curves.add(curve);
+            });
+
+            scene.add(curves);
+        }
+
+
+        // Draw initial indifference curves
+        drawIndifferenceCurves(generateLevels(10));
+
+        // Function to generate levels based on the density
+        function generateLevels(density) {
+            const levels = [];
+            for (let i = 1; i <= density; i++) {
+                levels.push((i / density) * maxZ); // Ensure levels cover the full range up to maxZ
+            }
+            return levels;
+        }
+
+        // Function to update the displayed levels
+        function updateLevelsDisplay(density) {
+            const levels = generateLevels(density);
+            const levelsDisplay = document.getElementById('levelsDisplay');
+            levelsDisplay.textContent = `Levels: ${levels.map(level => level.toFixed(2)).join(', ')}`;
+        }
+
+        // Update levels display initially and when the slider changes
+        updateLevelsDisplay(10); // Initial value
+        function updateCurveDensity(density) {
+            drawIndifferenceCurves(generateLevels(density));
+            updateLevelsDisplay(density); // Update the levels displayed
+        }
+
+        // Create the bounding box
+        const boxSize = size;
+        const boxHeight = maxZ * 1.1;
+        const boxVertices = new Float32Array([
+            0, 0, 0,  boxSize, 0, 0,
+            boxSize, 0, 0,  boxSize, boxSize, 0,
+            boxSize, boxSize, 0,  0, boxSize, 0,
+            0, boxSize, 0,  0, 0, 0,
+            0, 0, boxHeight,  boxSize, 0, boxHeight,
+            boxSize, 0, boxHeight,  boxSize, boxSize, boxHeight,
+            boxSize, boxSize, boxHeight,  0, boxSize, boxHeight,
+            0, boxSize, boxHeight,  0, 0, boxHeight,
+            0, 0, 0,  0, 0, boxHeight,
+            boxSize, 0, 0,  boxSize, 0, boxHeight,
+            boxSize, boxSize, 0,  boxSize, boxSize, boxHeight,
+            0, boxSize, 0,  0, boxSize, boxHeight
+        ]);
+        const boxGeometry = new THREE.BufferGeometry();
+        boxGeometry.setAttribute('position', new THREE.BufferAttribute(boxVertices, 3));
+        const boxMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
+        const boundingBox = new THREE.LineSegments(boxGeometry, boxMaterial);
+        boundingBox.visible = false; // Initially hide the bounding box
+        scene.add(boundingBox);
+
+        // Create arrows and labels as a group
+        const arrowsAndLabels = new THREE.Group();
+
+        // Function to create axis labels
+        function createLabel(text, position) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 512; // Increase canvas size for larger text
+            canvas.height = 256;
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.font = '72px Arial'; // Increase font size for larger labels
+            context.fillStyle = 'white'; // Set text color to white
+            context.fillText(text, 10, 100); // Adjust text position for better visibility
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.position.set(position.x, position.y, position.z);
+            sprite.scale.set(2.5, 1.25, 1); // Increase scale for larger labels
+            sprite.renderOrder = 999; // Render labels last to keep them in the foreground
+            spriteMaterial.depthTest = false; // Disable depth test to keep labels visible
+            arrowsAndLabels.add(sprite);
+        }
+
+        // Function to add arrows for each axis
+        function addArrow(direction, origin, color) {
+            const arrowLength = 5; // Length of the arrow
+            const arrowHelper = new THREE.ArrowHelper(direction, origin, arrowLength, color);
+            arrowsAndLabels.add(arrowHelper);
+        }
+
+        // Set the origin for the arrows
+        const origin = new THREE.Vector3(-0.2, -0.2, -0.2);
+
+        // Define positions for the labels outside the bounding box
+        const xLabelPosition = new THREE.Vector3(4, 0, 0); // X label position
+        const yLabelPosition = new THREE.Vector3(0, 4, 0); // Y label position
+        const zLabelPosition = new THREE.Vector3(0, 0, 4); // Z label position
+
+        // Add arrows for each axis in white color
+        addArrow(new THREE.Vector3(1, 0, 0), origin, 0xffffff); // X-axis arrow
+        addArrow(new THREE.Vector3(0, 1, 0), origin, 0xffffff); // Y-axis arrow
+        addArrow(new THREE.Vector3(0, 0, 1), origin, 0xffffff); // Z-axis arrow
+
+        // Position labels at the specified positions
+        createLabel('X', xLabelPosition);
+        createLabel('Y', yLabelPosition);
+        createLabel('Z', zLabelPosition);
+
+        // Add arrows and labels to the scene
+        scene.add(arrowsAndLabels);
+
+        // Function to toggle visibility of elements and change button color
+        function toggleElement(element, buttonId) {
+            element.visible = !element.visible;
+            const button = document.getElementById(buttonId);
+            button.classList.toggle('toggled', !element.visible);
+        }
+
+
+        // Create a wall geometry
+        const wallWidth = Math.sqrt(Math.pow(size / 2, 2) + Math.pow(size / 2, 2)); // Diagonal length between (size / 2, 0) and (0, size / 2)
+        const wallHeight = maxZ; // Full height from minZ (0) to maxZ
+        const wallGeometry = new THREE.PlaneGeometry(wallWidth, wallHeight);
+
+        // Rotate the wall to be vertical and align it correctly
+        wallGeometry.rotateX(Math.PI / 2); // Rotate 90 degrees around X-axis to make it vertical
+        wallGeometry.rotateZ(-Math.PI / 4); // Rotate 45 degrees around Z-axis to align diagonally
+
+        // Create the material for the wall
+        const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x888888, side: THREE.DoubleSide, opacity: 0.5, transparent: true });
+
+        // Create the wall mesh
+        const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+        wall.position.set(size / 4, size / 4, wallHeight / 2); // Position at the midpoint between (size / 2, 0) and (0, size / 2) and at full height
+
+        // Add the wall to the scene
+        wall.visible = false;
+        scene.add(wall);
+
+
+
+        // Update button colors based on initial visibility state
+        document.getElementById('surfaceButton').classList.toggle('toggled', !surface.visible);
+        document.getElementById('curvesButton').classList.toggle('toggled', !curves.visible);
+        document.getElementById('boxButton').classList.toggle('toggled', !boundingBox.visible);
+        document.getElementById('arrowsLabelsButton').classList.toggle('toggled', !arrowsAndLabels.visible);
+        document.getElementById('wallButton').classList.toggle('toggled', !wall.visible); // New wall button color update
+
+        // Function to update camera information
+        const cameraInfo = document.getElementById('cameraInfo');
+        function updateCameraInfo() {
+            cameraInfo.textContent = `Position: (${camera.position.x.toFixed(2)}, ${camera.position.y.toFixed(2)}, ${camera.position.z.toFixed(2)})\nUp: (${camera.up.x.toFixed(2)}, ${camera.up.y.toFixed(2)}, ${camera.up.z.toFixed(2)})`;
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            updateCameraInfo(); // Update camera information
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
