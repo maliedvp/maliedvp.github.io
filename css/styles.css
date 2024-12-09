@@ -95,7 +95,7 @@ line-height:30px
 }
 
 .listArrow li {
-background:url(../images/links-arrow.png) 0 12px no-repeat;
+background:url('/correct/path/to/images/links-arrow.png') 0 12px no-repeat;
 padding-left:15px;
 color:#001626
 }
@@ -1598,6 +1598,9 @@ height:auto!important
 }
 
 @media (max-width: 480px) {
+    .header {
+        display: none;
+    }
 .navbar-inverse .navbar-nav > li > a {
 font-size:1.1em;
 padding:6px 0!important;
