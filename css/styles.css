@@ -1426,6 +1426,12 @@ opacity:1;
 transform:translate3d(0,0,0)
 }
 
+.carousel-inner {
+display: flex!important; /* Enables flexbox */
+justify-content: center!important; /* Horizontally centers content */
+align-items: center!important; /* Vertically centers content */ 
+}
+
 .carousel-inner .item {
 opacity:0;
 transition-property:opacity
