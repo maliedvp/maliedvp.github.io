@@ -1976,3 +1976,32 @@ to {
 opacity:1
 }
 }
+
+
+/* Force banner to always fill full viewport height */
+/* Full-screen banner that keeps full browser width */
+#home,
+.banner-container,
+#carousel,
+.carousel-inner,
+.carousel-inner .item {
+  min-height: 100vh; /* full viewport height */
+}
+
+/* Undo the flex centering that causes width shrink */
+.carousel-inner {
+  display: block !important;
+}
+
+/* Make each slide and its image span the full viewport */
+.carousel-inner .item,
+.carousel-inner .item img {
+  width: 100vw;   /* full browser width */
+  height: 100vh;  /* full browser height */
+}
+
+.carousel-inner .item img {
+  object-fit: cover;        /* fill area, crop if needed */
+  object-position: center;  /* center the crop */
+  display: block;           /* avoid inline-gap */
+}
