@@ -2005,3 +2005,101 @@ opacity:1
   object-position: center;  /* center the crop */
   display: block;           /* avoid inline-gap */
 }
+
+/* === Mobile: stack columns + clean layout === */
+@media (max-width: 768px) {
+  /* stack any flex columns */
+  .column-container {
+    display: block !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+  .column, .column_2 {
+    flex: none !important;
+    width: 100% !important;
+    padding: 16px 0 !important;
+  }
+
+  /* disable desktop floats/widths in About section */
+  #aboutUs .left, #aboutUs .right {
+    float: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .row .area1, .row .area2 { width: 100% !important; }
+
+  /* make text area full width */
+  .grid .text-content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* avoid “justified” rivers on narrow screens */
+  p { text-align: left !important; }
+
+  /* keep images centered and not oversized */
+  .image-container-left img {
+    /* width: 50% !important; */
+    /* max-width: 420px; */
+    /* margin: 16px auto !important; */
+    display: none !important; 
+  }
+
+  .image-container-right img,
+  .image-container-center img {
+    width: 100% !important;
+    max-width: 420px;
+    margin: 16px auto !important;
+  }
+
+  #aboutUs .right,
+  #aboutUs .image-container-left + * {
+    float: none !important;
+    width: 100% !important;
+  }
+
+  /* add padding inside the main content sections */
+  .page-section, 
+  #aboutUs {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  /* paragraphs as block text (justified) */
+  p {
+    text-align: justify !important;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,.1);
+    color: #fefefe;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 22px;
+    text-align: center;
+    /* font-weight: bold; */
+    opacity: 0;
+    transition: opacity 1.0s ease;
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .scroll-hint:after {
+    content: "";
+    display: block;
+    margin: 6px auto 0;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #fefefe;
+  }
+
+  .scroll-hint.visible {
+    opacity: 1;
+  }
+}
