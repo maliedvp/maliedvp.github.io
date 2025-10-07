@@ -1,0 +1,4 @@
+OCR:
+
+30_3a_585_daimler.pdf: "Daimler MMotoren Gesellschaft in Berlin,"
+31_3a_604_daimler.pdf: "Daimler-Benz Aktiengesellschaft in Berlin,"
