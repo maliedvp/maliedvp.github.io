@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Oswald:400,700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Reign of the Great Banks @ Umeå 2025</title>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oswald:400,700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #001626;       /* main background */
+    --card: #001626;     /* card / header background */
+    --text: #fefefd;     /* main text color */
+    --muted: #94a3b8;    /* muted / secondary text */
+    --accent: #425f73;   /* accent color for buttons, links */
+    --gold: #FFD700;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { display: grid; grid-template-rows: auto 1fr; height: 100%; gap: 12px; padding: 16px; }
+
+  header {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 6px 24px rgba(0,0,0,.25);
+  }
+
+  .title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  .title:hover { color: var(--accent); }
+
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    appearance: none;
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    cursor: pointer;
+    background: var(--accent);
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+    font-family: 'Open Sans', sans-serif;
+  }
+  .btn:hover { background: var(--gold); }
+
+  .btn.primary { background: var(--gold); }
+  .btn.primary:hover { background: var(--accent); }
+
+  .viewer {
+    background: var(--card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 12px 40px rgba(0,0,0,.35);
+  }
+
+  object.pdf {
+    width: 100%;
+    height: calc(100vh - 120px);
+    display: block;
+    border: none;
+  }
+
+  #pdfjsContainer {
+    display: none;
+    position: relative;
+    height: calc(100vh - 120px);
+    overflow: auto;
+    padding: 16px;
+  }
+  #pdfjsPages { display: grid; gap: 16px; justify-items: center; }
+  canvas.pdf-page {
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 8px;
+    box-shadow: 0 2px 14px rgba(0,0,0,.35);
+    background: #fff;
+  }
+
+  .fallbackNote {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    background: linear-gradient(180deg, rgba(0,0,0,.5), rgba(0,0,0,.8));
+  }
+  .fallbackNote.visible { display: flex; }
+
+  a { color: var(--text); }
+  a:hover { color: #ffffffd9; }
+
+  button,
+  .btn,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"] {
+    font-family: 'Oswald', sans-serif !important; /* or 'Oswald' if you prefer */
+    font-weight: 600; /* adjust to 400/700 as desired */
+    letter-spacing: 0.2px;
+  }
+
+  /* If you’re on iOS/Safari, also neutralize native styling */
+  button,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">The Reign of the Great Banks @ Umeå 2025</div>
+      <div class="controls">
+        <a id="openLink" class="btn" href="greatbank_hellerliebald.pdf" target="_blank" rel="noopener">Open in new tab</a>
+        <a id="backLink" class="btn" href="https://www.marius-liebald.de" target="_blank" rel="noopener">Back to Webpage</a>
+      </div>
+    </header>
+
+    <div class="viewer">
+      <!-- 1) Try native inline PDF first (best performance, built-in browser UI) -->
+      <object id="pdfObject" class="pdf" data="greatbank_hellerliebald.pdf#toolbar=1&navpanes=0&view=fitH" type="application/pdf"></object>
+
+      <!-- 2) If native embed fails/blocked, we can render using PDF.js below -->
+      <div id="pdfjsContainer" aria-live="polite">
+        <div id="pdfjsPages"></div>
+      </div>
+
+      <!-- Gentle note if neither path works -->
+      <div id="fallbackNote" class="fallbackNote">
+        <div>
+          <h2 style="margin:0 0 8px">Can’t display the PDF here</h2>
+          <p style="color: var(--muted); margin:0 0 12px">Your browser or server settings may block inline PDFs.</p>
+          <p style="margin:0 0 16px"><a href="greatbank_hellerliebald.pdf" target="_blank" rel="noopener">Open in a new tab</a> or use the <em>Compatibility Viewer</em> button above.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF.js (only used if we switch to compatibility mode). Served from a CDN. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js" integrity="sha512-RhQw0l4gk4Kf6rQv4e3b0wQqQz8r8Hq9u3r0YFQeGmYezm8sQw2dG3zq2iFQm0D1c8dY0kz4G9b3eZz8Q4BpcA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+    (function () {
+      const pdfPath = "greatbank_hellerliebald.pdf";
+      const objectEl = document.getElementById('pdfObject');
+      const compatBtn = document.getElementById('compatBtn');
+      const printBtn = document.getElementById('printBtn');
+      const fallbackNote = document.getElementById('fallbackNote');
+      const pdfjsContainer = document.getElementById('pdfjsContainer');
+      const pdfjsPages = document.getElementById('pdfjsPages');
+
+      // Resize helper for native <object>
+      const setHeight = () => {
+        const h = window.innerHeight - document.querySelector('header').offsetHeight - 28;
+        if (objectEl) objectEl.style.height = Math.max(280, h) + 'px';
+        if (pdfjsContainer) pdfjsContainer.style.height = Math.max(280, h) + 'px';
+      };
+      setHeight();
+      window.addEventListener('resize', setHeight);
+
+      // Heuristic: if the <object> fails to load or is blocked by headers like X-Frame-Options/CSP,
+      // some browsers will fire an error, others just render empty. Provide an explicit switch.
+      let usingPdfJs = false;
+
+      async function usePdfJsViewer() {
+        if (usingPdfJs) return;
+        usingPdfJs = true;
+
+        // Hide native object, show pdfjs container
+        objectEl.style.display = 'none';
+        pdfjsContainer.style.display = 'block';
+
+        if (!window['pdfjsLib']) {
+          showFallbackNote();
+          return;
+        }
+
+        const pdfjsLib = window['pdfjsLib'];
+        // worker is bundled in modern builds; if needed you can set pdfjsLib.GlobalWorkerOptions.workerSrc
+        try {
+          const loadingTask = pdfjsLib.getDocument(pdfPath);
+          const pdf = await loadingTask.promise;
+          // Render all pages sequentially to canvases
+          for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            const page = await pdf.getPage(pageNum);
+            const scale = 1.25; // Adjust default zoom here
+            const viewport = page.getViewport({ scale });
+
+            const canvas = document.createElement('canvas');
+            canvas.className = 'pdf-page';
+            const context = canvas.getContext('2d');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            pdfjsPages.appendChild(canvas);
+
+            await page.render({ canvasContext: context, viewport }).promise;
+          }
+        } catch (e) {
+          console.error(e);
+          showFallbackNote();
+        }
+      }
+
+      function showFallbackNote() {
+        fallbackNote.classList.add('visible');
+      }
+
+      // Provide a manual switch in case native embed looks blank
+      compatBtn.addEventListener('click', usePdfJsViewer);
+
+      // Attempt a very light-weight detection: if the object hasn't painted after a delay, suggest PDF.js
+      setTimeout(() => {
+        try {
+          // If the object has 0 height (blocked or not rendered), hint the user
+          const rect = objectEl.getBoundingClientRect();
+          if (rect.height < 50) {
+            // Auto-switch to compatibility viewer for better UX
+            usePdfJsViewer();
+          }
+        } catch (_) {}
+      }, 900);
+
+      // Print handler — open native PDF in new tab and invoke print (most reliable across browsers)
+      printBtn.addEventListener('click', function () {
+        const w = window.open(pdfPath, '_blank', 'noopener');
+        if (!w) return alert('Your browser blocked the print popup. Please allow popups for this site.');
+        const tryPrint = () => { try { w.focus(); w.print(); } catch (e) {} };
+        setTimeout(tryPrint, 600);
+      });
+    })();
+  </script>
+</body>
+</html>
