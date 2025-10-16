@@ -199,6 +199,8 @@
           </group>
         </if>
       </choose>
+      <!-- JEH: Suppress DOI and URL output -->
+      <!--
       <choose>
         <if type="legal_case" match="none">
           <choose>
@@ -211,6 +213,7 @@
           </choose>
         </if>
       </choose>
+      -->
     </group>
   </macro>
   <macro name="title">
