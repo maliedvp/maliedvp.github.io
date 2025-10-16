@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Exercise 2 – GitHub Setup</title>
+  <!-- <link rel="stylesheet" href="../css/styles.css"> -->
+  <meta name="color-scheme" content="dark">
+  <style>
+    /* Theme (forced for Firefox) */
+    :root {
+      color-scheme: dark;
+      --bg: #001626;
+      --panel: #0b2436;
+      --text: #ffffff;
+      --muted: #e8f4ff;
+      --accent: #7dd4ff;
+      --accent-hover: #b3e5ff;
+      --border: #2e5c77;
+      --error: #ff7d7d;
+      --code-bg: #072235;
+      --code-text: #ffffff;
+    }
+
+    /* Base layout */
+    html, body { height: 100%; margin: 0; padding: 0; }
+    html { background: var(--bg) !important; }
+    body {
+      background: var(--bg) !important;
+      color: var(--text) !important;
+      font-family: 'Open Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      display: block;
+      line-height: 1.75;
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding: 24px 16px;
+      box-sizing: border-box;
+      filter: none !important;
+    }
+
+    /* Overlay for password (keeps centered) */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg) !important;
+      display: grid;
+      place-items: center;
+      z-index: 9999;
+    }
+
+    /* Panels */
+    .panel {
+      width: min(920px, 100%);
+      background: var(--panel) !important;
+      color: var(--text) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 14px;
+      padding: 28px 28px 18px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.35) !important;
+      margin: 16px auto;
+      opacity: 1 !important;
+      backdrop-filter: none !important;
+    }
+
+    /* Headings */
+    h1, h2 {
+      font-family: 'Oswald', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0 0 16px 0;
+      letter-spacing: .2px;
+      color: var(--text) !important;
+    }
+    h1 { font-size: 28px; }
+    h2 { font-size: 22px; color: var(--muted) !important; font-weight: 600; }
+
+    /* Links & emphasis */
+    a { color: var(--accent) !important; text-decoration: underline; text-underline-offset: 2px; }
+    a:hover { color: var(--accent-hover) !important; }
+    strong { color: #fff !important; }
+
+    /* Lists */
+    ol, ul { margin: 0 0 1em 1.2em; padding: 0; }
+    li { margin: .25em 0; }
+
+    /* Inline code */
+    code {
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid var(--border) !important;
+      font-size: .95em;
+    }
+
+    /* Password prompt card */
+    .password-prompt .panel { padding: 24px; max-width: 420px; text-align: center; }
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 16px;
+      color: var(--text) !important;
+      background: #0a1c2b !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 10px;
+      outline: none;
+      box-sizing: border-box;
+    }
+    input[type="password"]::placeholder { color: #9ab8c9; }
+    input[type="password"]:focus {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 3px rgba(125,212,255,.28) !important;
+    }
+
+    button {
+      background-color: var(--accent) !important;
+      color: #062136 !important;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+    button:hover { background-color: var(--accent-hover) !important; }
+
+    .error { color: var(--error) !important; font-size: 15px; margin-top: 10px; min-height: 1.2em; }
+
+    /* Hidden content until unlocked */
+    .content-container { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Centered password overlay -->
+  <div class="overlay" id="passwordOverlay">
+    <div class="password-prompt">
+      <div class="panel">
+        <h2>Enter Password</h2>
+        <input type="password" id="passwordInput" placeholder="Password" />
+        <br />
+        <button onclick="checkPassword()">Submit</button>
+        <div class="error" id="errorMessage"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page content -->
+  <div class="content-container panel" id="contentContainer">
+    <h1>Exercise 2 – GitHub Setup</h1>
+
+    <p>Create your first Git repository and push it to GitHub.</p>
+
+    <ol start="1" type="1">
+      <li><strong>Create a (Private) Git Repository</strong></li>
+    </ol>
+
+    <p>The repository should include the two files generated in <strong>Exercise 1</strong> in a subfolder called <code>exercise_1</code>.
+    The repository (i.e., the folder) should follow this naming convention <code>dsba_&lt;your_matriculation_number&gt;</code>.</p>
+
+    <p>Additionally, the folder must contain a <code>README.md</code> file that briefly describes your project and includes your <strong>matriculation number</strong>.
+    A <code>License</code> should likewise be added. Find a License at
+    <a href="https://choosealicense.com">choosealicense.com</a>.
+    Moreover, configure your <code>.gitignore</code> to exclude dotfiles, system/metadata files, and any temporary or cache files from being pushed to GitHub later on.</p>
+
+    <ol start="2" type="2">
+      <li><strong>Push it to GitHub</strong></li>
+    </ol>
+
+    <p>Before pushing your local repository to GitHub, you need to create a free account.
+    This <a href="https://github.com/signup?ref_cta=Sign+up&amp;ref_loc=header+logged+out&amp;ref_page=%2F&amp;source=header-home">link</a>
+    gets you to the page where you can sign up.</p>
+
+    <p>After logging in, you must set up remote access from your local computer.
+    This can be done either with an SSH key or a Personal Access Token (as outlined in the lecture slides).</p>
+
+    <p>Once remote access is configured, create a <strong>private</strong> GitHub repository (use the same naming convention as above)
+    and link it as the origin for your local repository.</p>
+
+    <p>Once this is accomplished, invite me as a collaborator on GitHub (account: <code>maliedvp</code>).</p>
+
+    <ol start="3" type="3">
+      <li><strong>Bonus Task for Fast Finishers</strong></li>
+    </ol>
+
+    <p>Team up with up to two other students from the class who have also completed <strong>Steps 1 &amp; 2</strong>.
+    Create a shared repository (you can use one of your previously created repos and invite your teammates as collaborators).
+    Each team member should then:</p>
+
+    <ul>
+      <li>Clone the repository to their local machine,</li>
+      <li>Create a new branch, implement changes, commit those changes, and push to the remote,</li>
+      <li>Open a pull request from their branch to the main/master branch on GitHub.</li>
+    </ul>
+
+    <p>As a group, intentionally create a merge conflict and collaboratively resolve it through the pull request process.
+    Document the steps you took.</p>
+  </div>
+
+  <script>
+    // Set your password here
+    const correctPassword = "ex2_makni";
+
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value.trim();
+      const error = document.getElementById("errorMessage");
+
+      if (input === correctPassword) {
+        document.getElementById("passwordOverlay").style.display = "none";
+        const content = document.getElementById("contentContainer");
+        content.style.display = "block";
+        window.scrollTo({ top: 0, behavior: "instant" });
+      } else {
+        error.textContent = "Incorrect password. Please try again.";
+      }
+    }
+
+    document.getElementById("passwordInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") checkPassword();
+    });
+  </script>
+
+</body>
+</html>
