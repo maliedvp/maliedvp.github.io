@@ -42,7 +42,7 @@
 <link href="css/animate.css" rel="stylesheet" media="screen">
 <!-- Owl Carousel Assets -->
 <link href="js/owl-carousel/owl.carousel.css" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=4" />
+<link rel="stylesheet" href="css/styles.css?v=6" />
 <link rel="stylesheet" href="css/cite.css?v=2" />
 <!-- Font Awesome -->
 <link href="font/css/font-awesome.min.css" rel="stylesheet">
@@ -128,9 +128,30 @@
       <p>I'm a postdoctoral researcher at Uppsala University in the <a href="https://www.uu.se/en/department/economic-history" target="_blank"><b>Department of Economic History</b></a>. Previously, I worked in a similar role within the Department of Management and Microeconomics at Goethe University Frankfurt. At the same institution, I was awarded my PhD with the highest distinction (summa cum laude) in 2023. My research focuses on the intersection of Economic/Financial History, Political Economy, and Data Science. It aims to increase the understanding of current economic phenomena by analyzing historical events using the latest statistical methods and (partly self-developed) AI-based technologies. Moreover, I visited the <a href="https://www.parisschoolofeconomics.eu/en/" target="_blank"><b>Paris School of Economics</b></a> (PSE) during a research stay in 2023 and was awarded research grants by the <a href="https://www.dfg.de/en" target="_blank"><b>DFG</b></a> (as part of the <a href="https://www.new-data-spaces.de/en-us/" target="_blank"><b>InfPP SPP 2431</b></a>), the <a href="https://www.fritz-thyssen-stiftung.de/en/" target="_blank"><b>Fritz Thyssen Foundation</b></a>, and, as co-applicant, the <a href="https://www.fazit-stiftung.de" target="_blank"><b>FAZIT Stiftung</b></a> and the <a href="https://www.vr.se/english.html" target="_blank"><b>Swedish Research Council</b></a>. For more detailed information on my background, please refer to my <a href="cv.html"><b>CV</b></a>.
     </div>
     <div class="column">
-      <div class="image-container-center" >
-        <img src="images/venn_final.png" alt="Descriptive text for the image" style="border: none; width: 300px; height: auto; margin-top:0px">
-      </div>
+      <!-- Research areas as an interactive Venn diagram: hovering a circle highlights the whole circle
+           (colour, size, shadow). Circles of radius 100, centres 150 apart; the overlaps come from the
+           semi-transparent fill, as in the former image (images/venn_final.png). -->
+      <svg class="venn" viewBox="-185 -153 370 350" role="img" aria-labelledby="venn-title">
+        <title id="venn-title">Venn diagram of my research areas: Economic &amp; Financial History, Political Economy and Data Science, and their overlaps</title>
+        <defs>
+          <filter id="venn-shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#001626" flood-opacity=".35"/>
+          </filter>
+          <path id="venn-label-a" d="M-84.99 38.09A82 82 0 1 1 4.90 -61.75"/>
+          <path id="venn-label-b" d="M-4.90 -61.75A82 82 0 1 1 84.99 38.09"/>
+          <path id="venn-label-c" d="M-87.67 94.27A88 88 0 0 0 87.67 94.27"/>
+        </defs>
+        <g class="venn-circles">
+          <circle class="venn-circle" cx="-75" cy="-43.3" r="100"><title>Economic &amp; Financial History</title></circle>
+          <circle class="venn-circle" cx="75" cy="-43.3" r="100"><title>Political Economy</title></circle>
+          <circle class="venn-circle" cx="0" cy="86.6" r="100"><title>Data Science</title></circle>
+        </g>
+        <g class="venn-labels" aria-hidden="true">
+          <text><textPath href="#venn-label-a" startOffset="50%">Economic &amp; Financial History</textPath></text>
+          <text><textPath href="#venn-label-b" startOffset="50%">Political Economy</textPath></text>
+          <text><textPath href="#venn-label-c" startOffset="50%">Data Science</textPath></text>
+        </g>
+      </svg>
     </div>
   </div>
 </section>
@@ -930,5 +951,6 @@
 <script src="js/owl-carousel/owl.carousel.js"></script>
 <script src="js/scroll-hint.js?v=2" defer></script>
 <script src="js/cite.js?v=2" defer></script>
+<script src="js/venn.js?v=2" defer></script>
 </body>
 </html>

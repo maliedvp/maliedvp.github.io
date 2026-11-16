@@ -2125,3 +2125,49 @@ opacity:1
 .scroll-hint.visible {
   opacity: 1;
 }
+
+/* Venn diagram of the research areas (About section): the circle under the pointer grows and turns darker blue */
+.venn {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  margin: 10px auto 0;
+  overflow: visible;
+}
+
+.venn-circle {
+  fill: #425f73;
+  fill-opacity: .75; /* overlapping circles get darker, as in the former image */
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform .25s ease, fill .25s ease, fill-opacity .25s ease;
+}
+
+.venn-circle:hover {
+  fill: #1f557c;
+  fill-opacity: 1;
+  stroke: #fefefd;
+  stroke-width: 1.5;
+  transform: scale(1.08);
+  filter: url(#venn-shadow);
+}
+
+.venn-labels {
+  pointer-events: none; /* hovering a label still hovers the circle below it */
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  fill: #001626;
+  stroke: #fefefd; /* light halo keeps the labels readable on every field colour */
+  stroke-width: 2.5px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  text-anchor: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .venn-circle {
+    transition: none;
+  }
+}
