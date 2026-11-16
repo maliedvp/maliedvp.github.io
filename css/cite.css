@@ -1,0 +1,139 @@
+/* "Cite" disclosure with a BibTeX entry under each paper */
+.cite {
+  margin: -4px 0 12px;
+}
+
+.cite > summary {
+  width: fit-content;
+  cursor: pointer;
+  color: #425f73;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.cite > summary:hover {
+  text-decoration: underline;
+}
+
+.cite > summary:focus-visible,
+.cite-copy:focus-visible {
+  outline: 2px solid #425f73;
+  outline-offset: 2px;
+}
+
+.cite-body {
+  position: relative;
+  margin-top: 8px;
+}
+
+.cite-body pre {
+  margin: 0;
+  padding: 10px 52px 10px 12px; /* right padding keeps the copy button clear of the text */
+  font-size: 12px;
+  line-height: 1.5;
+  color: #001626;
+  background: #f4f6f8;
+  border: 1px solid #d6dde3;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Positioning context for the button and its confirmation bubble */
+.cite-copy-wrap {
+  position: absolute;
+  inset-block-start: 6px;
+  inset-inline-end: 6px;
+}
+
+.cite-copy {
+  display: grid;
+  place-items: center;
+  min-inline-size: 32px;
+  min-block-size: 32px;
+  padding: 0;
+  color: #425f73;
+  background: #ffffffe6;
+  border: 1px solid #c4cdd5;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cite-copy:hover {
+  background: #ffffff;
+  border-color: #425f73;
+}
+
+/* Swap the clipboard icon for a check mark after a successful copy */
+.cite-copy .fa-check,
+.cite-copy[data-copied] .fa-clipboard {
+  display: none;
+}
+
+.cite-copy[data-copied] .fa-check {
+  display: inline-block;
+}
+
+/* Confirmation bubble; it is also the live region, so it is hidden with opacity only */
+.cite-tip {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: calc(100% + 6px);
+  translate: 0 -50%;
+  padding: 2px 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  color: #ffffff;
+  background: #001626;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity .15s;
+  pointer-events: none;
+}
+
+.cite-tip:not(:empty) {
+  opacity: 1;
+}
+
+/* Homepage: "Cite" sits in the line with the other links; the entry opens below that line */
+.cite-toggle {
+  padding: 0;
+  font: inherit;
+  color: #425f73;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.cite-toggle:hover {
+  text-decoration: underline;
+}
+
+.cite-toggle:focus-visible {
+  outline: 2px solid #425f73;
+  outline-offset: 2px;
+}
+
+/* Small decorative caret, turned upwards while the entry is open */
+.cite-toggle::after {
+  content: "";
+  display: inline-block;
+  margin-inline-start: 6px;
+  vertical-align: 2px;
+  border-inline: 4px solid transparent;
+  border-block-start: 5px solid currentColor;
+  transition: transform .15s;
+}
+
+.cite-toggle[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+
+.cite-panel {
+  margin: -6px 0 16px;
+}
+
+.cite-panel[hidden] {
+  display: none;
+}
