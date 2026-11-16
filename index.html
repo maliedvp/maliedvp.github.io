@@ -17,6 +17,13 @@
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<script>
+  // Coming back to the page (link with an anchor, e.g. from a paper page, or the back button): skip the intro animations
+  (function () {
+    var nav = window.performance && performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+    if (location.hash || (nav && nav.type === 'back_forward')) document.documentElement.className += ' skip-intro';
+  })();
+</script>
 <!--[if lt IE 9]> 
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <![endif]-->
@@ -35,7 +42,8 @@
 <link href="css/animate.css" rel="stylesheet" media="screen">
 <!-- Owl Carousel Assets -->
 <link href="js/owl-carousel/owl.carousel.css" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="css/styles.css?v=4" />
+<link rel="stylesheet" href="css/cite.css?v=2" />
 <!-- Font Awesome -->
 <link href="font/css/font-awesome.min.css" rel="stylesheet">
 <link href="font/css/academicons.css" rel="stylesheet">
@@ -47,7 +55,7 @@
     <nav class="navbar navbar-inverse" role="navigation">
       <div class="navbar-header">
         <button type="button" id="nav-toggle" class="navbar-toggle" data-toggle="collapse" data-target="#main-nav"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-        <a href="#" class="navbar-brand scroll-top logo animated bounceInLeft"><img src="images/logo_name.png" /></a> </div>
+        <a href="#" class="navbar-brand scroll-top logo animated bounceInLeft"><img src="images/logo_name.png?v=2" width="198" height="27" alt="Marius Liebald" /></a> </div>
       <!--/.navbar-header-->
       <div id="main-nav" class="collapse navbar-collapse">
         <ul class="nav navbar-nav" id="mainNav">
@@ -64,9 +72,13 @@
     </nav>
     <!--/.navbar--> 
   </div>
-  <!--/.container--> 
+  <!--/.container-->
 </header>
 <!--/.header-->
+<script>
+  // Arriving directly at a section further down: start with the solid navigation bar (the nav script keeps it in sync later)
+  if (location.hash && location.hash !== '#home' && location.hash !== '#top') document.querySelector('.header').classList.add('addBg');
+</script>
 <div id="#top"></div>
 
 
@@ -113,7 +125,7 @@
   </div>
   <div class="column-container">
     <div class="column">
-      <p>I'm a postdoctoral researcher at Uppsala University in the <a href="https://www.uu.se/en/department/economic-history" target="_blank"><b>Department of Economic History</b></a>. Previously, I worked in a similar role within the Department of Management and Microeconomics at Goethe University Frankfurt. At the same institution, I was awarded my PhD with the highest distinction (summa cum laude) in 2023. My research focuses on the intersection of Economic/Financial History, Political Economy, and Data Science. It aims to increase the understanding of current economic phenomena by analyzing historical events using the latest statistical methods and (partly self-developed) AI-based technologies. Moreover, I visited the <a href="https://www.parisschoolofeconomics.eu/en/" target="_blank"><b>Paris School of Economics</b></a> (PSE) during a research stay in 2023 and was awarded research grants by the <a href="https://www.dfg.de/en" target="_blank"><b>DFG</b></a> (as part of the <a href="https://www.new-data-spaces.de/en-us/" target="_blank"><b>InfPP SPP 2431</b></a>), the <a href="https://www.fritz-thyssen-stiftung.de/en/" target="_blank"><b>Fritz Thyssen Foundation</b></a>, and the <a href="https://www.fazit-stiftung.de" target="_blank"><b>FAZIT Stiftung</b></a>. For more detailed information on my background, please refer to my <a href="https://www.dropbox.com/scl/fi/y49lxojtenp2dcjtjwpzu/cv.pdf?rlkey=7lxj90xrwz2lldcl0lvi6wxo2&st=xpppyvyz&dl=0" target="_blank"><b>CV</b></a>.
+      <p>I'm a postdoctoral researcher at Uppsala University in the <a href="https://www.uu.se/en/department/economic-history" target="_blank"><b>Department of Economic History</b></a>. Previously, I worked in a similar role within the Department of Management and Microeconomics at Goethe University Frankfurt. At the same institution, I was awarded my PhD with the highest distinction (summa cum laude) in 2023. My research focuses on the intersection of Economic/Financial History, Political Economy, and Data Science. It aims to increase the understanding of current economic phenomena by analyzing historical events using the latest statistical methods and (partly self-developed) AI-based technologies. Moreover, I visited the <a href="https://www.parisschoolofeconomics.eu/en/" target="_blank"><b>Paris School of Economics</b></a> (PSE) during a research stay in 2023 and was awarded research grants by the <a href="https://www.dfg.de/en" target="_blank"><b>DFG</b></a> (as part of the <a href="https://www.new-data-spaces.de/en-us/" target="_blank"><b>InfPP SPP 2431</b></a>), the <a href="https://www.fritz-thyssen-stiftung.de/en/" target="_blank"><b>Fritz Thyssen Foundation</b></a>, and the <a href="https://www.fazit-stiftung.de" target="_blank"><b>FAZIT Stiftung</b></a>. For more detailed information on my background, please refer to my <a href="cv.pdf" target="_blank"><b>CV</b></a>.
     </div>
     <div class="column">
       <div class="image-container-center" >
@@ -140,7 +152,7 @@
   <div class="column-container">
     <div class="column">
       <div class="image-container-left">
-        <a href="https://www.dropbox.com/scl/fi/ish2n3birekivvp2oktoz/shadows_online.pdf?rlkey=5d0e0h5t93s1f2smcx77dyvnn&st=b4z2r8os&dl=0" target="_blank">
+        <a href="papers/shadows.html">
           <img src="pdfs/crisis_ruhr.jpg" alt="Paper: The Shadows of a Shattered Economy: How Persistent are Increases in Extremist Voting?">
         </a>
       </div>
@@ -153,7 +165,26 @@
         |
         <span style="margin-right: 20px;"></span>
         <a href="https://doi.org/10.3886/ICPSR300232" target="_blank">Replication Package</a>
+        <span style="margin-right: 20px;"></span>
+        |
+        <span style="margin-right: 20px;"></span>
+        <button type="button" class="cite-toggle" aria-expanded="false" aria-controls="cite-shadows">Cite</button>
       </p>
+      <div class="cite-body cite-panel" id="cite-shadows" hidden>
+          <span class="cite-copy-wrap">
+            <button type="button" class="cite-copy" command="--copy" commandfor="bib-shadows" aria-label="Copy BibTeX: The Shadows of a Shattered Economy"><i class="fa fa-clipboard" aria-hidden="true"></i><i class="fa fa-check" aria-hidden="true"></i></button>
+            <span class="cite-tip" role="status"></span>
+          </span>
+<pre><code id="bib-shadows">@article{liebald2027shadows,
+  author  = {Liebald, Marius},
+  title   = {{The Shadows of a Shattered Economy: How Persistent are Increases in Extremist Voting?}},
+  journal = {The Journal of Economic History},
+  volume  = {87},
+  number  = {1},
+  year    = {2027},
+  note    = {Forthcoming}
+}</code></pre>
+      </div>
       <p>Economic shocks can trigger increases in extremist voting. I examine whether such effects are persistent or short-lived by leveraging the high frequency of federal elections in interwar Germany within a generalized differences-in-differences framework. Exploiting geographic variation in exposure to the economic crisis following the 1923 Ruhr Occupation, my findings indicate a temporary four-percentage-point increase in left-wing extremist voting. This increase faded within eight months and was accompanied by a differential decline in far-right voting and a surge in invalid ballots. Additional results suggest that later economic shocks revived previously diminished effects.</p>
     </div>
   </div>
@@ -178,7 +209,27 @@
         |
         <span style="margin-right: 20px;"></span>
         <a href="https://doi.org/10.3886/E208722V1" target="_blank">Replication Package</a>
+        <span style="margin-right: 20px;"></span>
+        |
+        <span style="margin-right: 20px;"></span>
+        <button type="button" class="cite-toggle" aria-expanded="false" aria-controls="cite-terror">Cite</button>
       </p>
+      <div class="cite-body cite-panel" id="cite-terror" hidden>
+          <span class="cite-copy-wrap">
+            <button type="button" class="cite-copy" command="--copy" commandfor="bib-terror" aria-label="Copy BibTeX: Terrorism and Voting"><i class="fa fa-clipboard" aria-hidden="true"></i><i class="fa fa-check" aria-hidden="true"></i></button>
+            <span class="cite-tip" role="status"></span>
+          </span>
+<pre><code id="bib-terror">@article{sabet2025terrorism,
+  author  = {Sabet, Navid and Liebald, Marius and Friebel, Guido},
+  title   = {{Terrorism and Voting: The Rise of Right-Wing Populism in Germany}},
+  journal = {American Economic Journal: Economic Policy},
+  volume  = {17},
+  number  = {3},
+  pages   = {407--440},
+  year    = {2025},
+  doi     = {10.1257/pol.20230615}
+}</code></pre>
+      </div>
       <p>We document that right-wing terrorism leads to significant increases in the vote share for the right-wing, populist AfD (Alternative für Deutschland) party in Germany. To identify causal effects, we exploit quasi-random variation between successful and failed attacks across municipalities. Using the SOEP, a longitudinal panel of individuals, we find successful terror leads individuals to prefer the AfD more and worry more about migration. Political parties - the AfD in particular - adjust their messaging in election manifestos in response to terror. Overall, and in contrast to previous work, we find terrorism is consequential to the rise of right-wing populism in a Western, multi-party democratic system.</p>
       <p>
         Selected media coverage: 
@@ -220,7 +271,27 @@
         |
         <span style="margin-right: 20px;"></span>
         <a href="https://dl.acm.org/doi/pdf/10.1145/3531533" target="_blank">Journal of Data and Information Quality 14 (3): 1-22.</a>
+        <span style="margin-right: 20px;"></span>
+        |
+        <span style="margin-right: 20px;"></span>
+        <button type="button" class="cite-toggle" aria-expanded="false" aria-controls="cite-database">Cite</button>
       </p>
+      <div class="cite-body cite-panel" id="cite-database" hidden>
+          <span class="cite-copy-wrap">
+            <button type="button" class="cite-copy" command="--copy" commandfor="bib-database" aria-label="Copy BibTeX: Historical German Firm-level Financial Database"><i class="fa fa-clipboard" aria-hidden="true"></i><i class="fa fa-check" aria-hidden="true"></i></button>
+            <span class="cite-tip" role="status"></span>
+          </span>
+<pre><code id="bib-database">@article{gram2022design,
+  author  = {Gram, Dennis and Karapanagiotis, Pantelis and Liebald, Marius and Walz, Uwe},
+  title   = {{Design and Implementation of a Historical German Firm-level Financial Database}},
+  journal = {Journal of Data and Information Quality},
+  volume  = {14},
+  number  = {3},
+  pages   = {1--22},
+  year    = {2022},
+  doi     = {10.1145/3531533}
+}</code></pre>
+      </div>
       <p>Broad, long-term financial, and economic datasets are scarce resources, particularly in the European context. In this article, we present an approach for an extensible data model that is adaptable to future changes in technologies and sources. This model may constitute a basis for digitized and structured long-term historical datasets for different jurisdictions and periods. The data model covers the specific peculiarities of historical financial and economic data and is flexible enough to reach out for data of different types (quantitative as well as qualitative) from different historical sources, hence, achieving extensibility. Furthermore, we outline a relational implementation of this approach based on historical German firm and stock market data from 1920 to 1932.</p>
     </div>
   </div>
@@ -233,7 +304,7 @@
   <div class="column-container">
     <div class="column">
       <div class="image-container-left">
-        <a href="https://www.dropbox.com/scl/fi/3nfnimjsnu5m3ahtcjpw3/neermatch.pdf?rlkey=623h7ljdayrno5t9z6vql58l3&st=53kvz6ob&dl=0" target="_blank">
+        <a href="papers/neermatch.html">
           <img src="pdfs/neermatch.png" alt="Paper: It’s a Match! Feature Optimization for Entity Matching in Economic History">
         </a>
       </div>
@@ -245,16 +316,33 @@
         <span style="margin-right: 20px;"></span>
         |
         <span style="margin-right: 20px;"></span>
-        Working Paper
+        <a href="papers/neermatch.html">Working Paper</a>
         <span style="margin-right: 20px;"></span>
         |
         <span style="margin-right: 20px;"></span>
-        <a href="./presentations/neermatch/umea2025/index.html" target="_blank"><b>Slide deck</b></a>
+        <a href="./presentations/neermatch/umea2025/index.html" target="_blank">Slide deck</a>
         <span style="margin-right: 20px;"></span>
         |
         <span style="margin-right: 20px;"></span>
         Reject & Resubmit @ European Review of Economic History
+        <span style="margin-right: 20px;"></span>
+        |
+        <span style="margin-right: 20px;"></span>
+        <button type="button" class="cite-toggle" aria-expanded="false" aria-controls="cite-neermatch">Cite</button>
       </p>
+      <div class="cite-body cite-panel" id="cite-neermatch" hidden>
+          <span class="cite-copy-wrap">
+            <button type="button" class="cite-copy" command="--copy" commandfor="bib-neermatch" aria-label="Copy BibTeX: It’s a Match!"><i class="fa fa-clipboard" aria-hidden="true"></i><i class="fa fa-check" aria-hidden="true"></i></button>
+            <span class="cite-tip" role="status"></span>
+          </span>
+<pre><code id="bib-neermatch">@unpublished{hellberg2026match,
+  author = {Hellberg, Erik and Karapanagiotis, Pantelis and Liebald, Marius},
+  title  = {{It's a Match! Feature Optimization for Entity Matching in Economic History}},
+  note   = {Working Paper},
+  year   = {2026},
+  url    = {https://www.marius-liebald.de/papers/neermatch.html}
+}</code></pre>
+      </div>
       <p>This paper demonstrates that feature optimization, the joint expansion and targeted reduction of similarity measures, improves entity matching in economic history. Across three use cases, we show that simultaneously employing a wide range of (up to 24) similarity concepts improves performance across all tested classifiers (Logit, Probit, Gradient Boosting, ANNs), and that for linear classifiers a subsequent feature selection step further increases performance in high-dimensional settings. We accompany the methodology with an open-source package providing a unified interface for training, storing, and reusing models. Matching performance, our results show, depends primarily on similarity-concept choice rather than on model complexity.</p>
     </div>
   </div>
@@ -262,7 +350,7 @@
   <div class="column-container">
     <div class="column">
       <div class="image-container-left">
-        <a href="https://publikationen.ub.uni-frankfurt.de/opus4/frontdoor/deliver/index/docId/70399/file/SSRN-id4541376.pdf" target="_blank">
+        <a href="papers/similarity.html">
           <img src="pdfs/SSRN-id4541376.png" alt="Paper: Entity Matching with Similarity Encoding: A Supervised Learning Recommendation Framework for Linking (Big) Data">
         </a>
       </div>
@@ -274,12 +362,31 @@
         <span style="margin-right: 20px;"></span>
         |
         <span style="margin-right: 20px;"></span>
-        Working Paper
+        <a href="papers/similarity.html">Working Paper</a>
         <span style="margin-right: 20px;"></span>
         |
         <span style="margin-right: 20px;"></span>
-        <a href="./presentations/neermatch/umea2025/index.html" target="_blank"><b>Slide deck</b></a>
+        <a href="./presentations/neermatch/umea2025/index.html" target="_blank">Slide deck</a>
+        <span style="margin-right: 20px;"></span>
+        |
+        <span style="margin-right: 20px;"></span>
+        <button type="button" class="cite-toggle" aria-expanded="false" aria-controls="cite-similarity">Cite</button>
       </p>
+      <div class="cite-body cite-panel" id="cite-similarity" hidden>
+          <span class="cite-copy-wrap">
+            <button type="button" class="cite-copy" command="--copy" commandfor="bib-similarity" aria-label="Copy BibTeX: Entity Matching with Similarity Encoding"><i class="fa fa-clipboard" aria-hidden="true"></i><i class="fa fa-check" aria-hidden="true"></i></button>
+            <span class="cite-tip" role="status"></span>
+          </span>
+<pre><code id="bib-similarity">@techreport{karapanagiotis2023entity,
+  author      = {Karapanagiotis, Pantelis and Liebald, Marius},
+  title       = {{Entity Matching with Similarity Encoding: A Supervised Learning Recommendation Framework for Linking (Big) Data}},
+  institution = {Leibniz Institute for Financial Research SAFE},
+  type        = {SAFE Working Paper},
+  number      = {398},
+  year        = {2023},
+  doi         = {10.2139/ssrn.4541376}
+}</code></pre>
+      </div>
       <p>In this study, we introduce a novel entity matching (EM) framework. It combines state-of-the-art EM approaches based on Artificial Neural Networks (ANN) with a new similarity encoding derived from matching techniques that are prevalent in finance and economics. Our framework is on-par or outperforms alternative end-to-end frameworks in standard benchmark cases. Because similarity encoding is constructed using (edit) distances instead of semantic similarities, it avoids out-of-vocabulary problems when matching dirty data. We highlight this property by applying an EM application to dirty financial firm-level data extracted from historical archives.</p>
     </div>
   </div>
@@ -287,8 +394,8 @@
   <div class="column-container">
     <div class="column">
       <div class="image-container-left">
-        <a href="https://www.dropbox.com/scl/fi/nfmdok04q4cpzbjk9gecz/klump-et-al.-2024.pdf?rlkey=taz2dot87thaeu4ak7ijn0pz0&dl=0" target="_blank">
-          <img src="pdfs/samuelson.png" alt="Paper: Shifts in Canonized Economic Knowledge: A Quantitative Assessment of Economics à la Paul Samuelson and William Nordhaus (1948-2010)">
+        <a href="papers/samuelson.html">
+          <img src="pdfs/samuelson.png" alt="Paper: Tracing Modern Mainstream Economics (1948-2010): The Samuelson-Nordhaus Legacy Analyzed Through Natural Language Processing">
         </a>
       </div>
     </div>
@@ -299,13 +406,30 @@
         <span style="margin-right: 20px;"></span>
         |
         <span style="margin-right: 20px;"></span>
-        Working Paper
+        <a href="papers/samuelson.html">Working Paper</a>
         <span style="margin-right: 20px;"></span>
         |
         <span style="margin-right: 20px;"></span>
-        Under Review @ Journal of Contextual Economics
+        Revise & Resubmit @ Journal of Contextual Economics
+        <span style="margin-right: 20px;"></span>
+        |
+        <span style="margin-right: 20px;"></span>
+        <button type="button" class="cite-toggle" aria-expanded="false" aria-controls="cite-samuelson">Cite</button>
       </p>
-      <p>We examine shifts in the importance and connotation of focal economics concepts over the second half of the 20th century. Our study relies on quantitative text and sentiment analyses of the 19 editions of Paul A. Samuelson’s textbook Economics. Its longivity and its global commercial success have made it a valuable source for detecting long-term developments of mainstream economic knowledge. Our paper complements existing qualitative and cross-sectional quantitative studies on Economics with a time series perspective. We can generally confirm findings from earlier qualitative research but give them a quantifiable and thus more precise meaning.</p>
+      <div class="cite-body cite-panel" id="cite-samuelson" hidden>
+          <span class="cite-copy-wrap">
+            <button type="button" class="cite-copy" command="--copy" commandfor="bib-samuelson" aria-label="Copy BibTeX: Tracing Modern Mainstream Economics"><i class="fa fa-clipboard" aria-hidden="true"></i><i class="fa fa-check" aria-hidden="true"></i></button>
+            <span class="cite-tip" role="status"></span>
+          </span>
+<pre><code id="bib-samuelson">@unpublished{klump2026tracing,
+  author = {Klump, Rainer and K{\"u}sters, Anselm and Liebald, Marius and Sauer, Ingo},
+  title  = {{Tracing Modern Mainstream Economics (1948--2010): The Samuelson-Nordhaus Legacy Analyzed Through Natural Language Processing}},
+  note   = {Working Paper},
+  year   = {2026},
+  url    = {https://www.marius-liebald.de/papers/samuelson.html}
+}</code></pre>
+      </div>
+      <p>Between 1948 and 2010, Paul Samuelson’s <i>Economics</i>, co-authored by William Nordhaus from 1985 onwards, shaped introductory economics. We analyze all nineteen editions using expression counts, topic modelling, and sentiment scoring. Formalization increased until the early 1970s, after which institutional topics, particularly labor unions, declined while market-oriented topics rose. The textbook combines classical, neoclassical and Keynesian elements, with the proportion of Keynesian content decreasing after 1970. An LLM-based analysis of paragraphs containing explicit school labels or named representatives finds that Keynesian and Neoclassical Economics are treated predominantly neutrally, alongside a smaller, more critical number of references to Marxian and Radical Economics.</p>
     </div>
   </div>
   <div class="column-container">
@@ -315,7 +439,7 @@
         - When Do People Prefer Decentralized Money? Liquidity Substitution in 19th-Century Sweden. (w/ <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N8-1219" target="_blank"><b>A. Ögren</b></a> and <a href="https://portal.research.lu.se/en/persons/liang-zhao/" target="_blank"><b>L. Zhao</b></a>)
       </p>
       <p>
-        - The Reign of the <em>Great Banks</em>: Financial Development and Firms' Real Economic Activity in Imperial Germany (w/ <a href="https://www.david-heller.com/" target="_blank"><b>David Heller</b></a>, <a href="./presentations/greatbanks/munich2025/index.html" target="_blank"><b>Slide deck</b></a>)
+        - The Reign of the <em>Great Banks</em>: Financial Development and Firms' Real Economic Activity in Imperial Germany (w/ <a href="https://www.david-heller.com/" target="_blank"><b>David Heller</b></a>, <a href="./presentations/greatbanks/munich2025/index.html" target="_blank">Slide deck</a>)
       </p>
       <p>
         - Is the Linear Model of Innovation Actually Dead? A 'Topic-Sentiment Analysis' of Policy Documents (w/ Leo Leitzinger and <a href="https://westminsterresearch.westminster.ac.uk/researcher/vy0wq?section=biography" target="_blank"><b>Thanos Fragkandreas</b></a>)
@@ -804,6 +928,7 @@
 <script src="js/waypoints.js"></script> 
 <script src="js/custom.js" type="text/javascript"></script> 
 <script src="js/owl-carousel/owl.carousel.js"></script>
-<script src="js/scroll-hint.js" defer></script>
+<script src="js/scroll-hint.js?v=2" defer></script>
+<script src="js/cite.js?v=2" defer></script>
 </body>
 </html>

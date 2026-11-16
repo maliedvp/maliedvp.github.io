@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", async function () {
-  // Only run on mobile
-  if (!window.matchMedia("(max-width: 768px)").matches) return;
+  // Runs on every screen size: the hint lies on the banner image (see .scroll-hint in css/styles.css)
 
   // Defaults
   let cfg = {

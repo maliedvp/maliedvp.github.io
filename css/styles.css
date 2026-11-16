@@ -453,10 +453,28 @@ font-size:2.2em;
 text-shadow:none;
 margin:0;
 height:75px;
-aspect-ratio:2 / 1;
 display: flex;
 align-items: center; /* Vertically centers the child elements */
 justify-content: center; /* Horizontally centers the child elements */
+}
+
+/* Same height as before; width follows the image's proportions (max-width:none undoes the theme's img rule) */
+.logo img {
+height:27px;
+width:auto;
+max-width:none;
+}
+
+/* Links to a section (e.g. index.html#research) stop below the fixed navigation bar instead of underneath it */
+section[id] {
+scroll-margin-top:90px;
+}
+
+/* Returning to the page (see the script in index.html): show the navigation at once, without intro animations */
+.skip-intro .navbar-inverse,
+.skip-intro .animated {
+animation:none;
+opacity:1;
 }
 
 .logo img:hover {
@@ -2069,37 +2087,41 @@ opacity:1
   p {
     text-align: justify !important;
   }
+}
 
-  .scroll-hint {
-    position: absolute;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,.1);
-    color: #fefefe;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 22px;
-    text-align: center;
-    /* font-weight: bold; */
-    opacity: 0;
-    transition: opacity 1.0s ease;
-    pointer-events: none;
-    z-index: 100;
-  }
+/* "Scroll down" hint: lies on the bottom of the banner image on every screen size (js/scroll-hint.js shows it
+   after a short delay and hides it on the first scroll), so it never adds an extra line below the image */
+.scroll-hint {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.1);
+  color: #fefefe;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 22px;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,.5); /* keeps the white text readable on bright parts of the image */
+  /* font-weight: bold; */
+  opacity: 0;
+  transition: opacity 1.0s ease;
+  pointer-events: none;
+  z-index: 100;
+}
 
-  .scroll-hint:after {
-    content: "";
-    display: block;
-    margin: 6px auto 0;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 8px solid #fefefe;
-  }
+.scroll-hint:after {
+  content: "";
+  display: block;
+  margin: 6px auto 0;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #fefefe;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.5));
+}
 
-  .scroll-hint.visible {
-    opacity: 1;
-  }
+.scroll-hint.visible {
+  opacity: 1;
 }
