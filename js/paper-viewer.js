@@ -1,4 +1,4 @@
-// Minimal paper viewer for papers/*.html, built on PDF.js (js/pdfjs, pdfjs-dist 6.4.299).
+// Minimal paper viewer for papers/*.html and cv.html, built on PDF.js (js/pdfjs, pdfjs-dist 6.4.299).
 // Layout: top bar with controls (.paper-bar), contents from the PDF bookmarks (.paper-toc),
 // the paper (.pdf-viewer[data-pdf]) and the paper details (.paper-info).
 // Pages are rendered only while they are near the viewport, so long papers stay light on memory.
@@ -17,6 +17,7 @@ const viewer = document.querySelector('.pdf-viewer');
 const scroller = viewer.querySelector('.pdf-pages');
 const inner = viewer.querySelector('.pdf-pages-inner');
 const statusEl = viewer.querySelector('.pdf-status');
+const docLabel = viewer.dataset.label || 'paper'; // used in status messages ("Loading CV …")
 const pageInput = bar.querySelector('.pdf-page-input');
 const totalEl = bar.querySelector('.pdf-total');
 const zoomLevel = bar.querySelector('.pdf-zoom-level');
@@ -382,6 +383,21 @@ function passWheelToPageAtEnds(column) {
 passWheelToPageAtEnds(toc);
 passWheelToPageAtEnds(document.querySelector('.paper-info'));
 
+// Pages that show when the PDF was last updated (cv.html): fill <time data-pdf-date> from the PDF's own
+// modification or creation date, so the page needs no hand edit when the file is replaced.
+async function showPdfDate(pdf) {
+  const el = document.querySelector('[data-pdf-date]');
+  if (!el) return;
+  const { info } = await pdf.getMetadata().catch(() => ({}));
+  const match = /^D:(\d{4})(\d{2})(\d{2})/.exec(info?.ModDate || info?.CreationDate || '');
+  if (!match) return;
+  const [, year, month, day] = match;
+  el.dateTime = `${year}-${month}-${day}`;
+  el.textContent = new Date(Date.UTC(+year, +month - 1, +day))
+    .toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  el.closest('[hidden]')?.removeAttribute('hidden');
+}
+
 // ---- Start -------------------------------------------------------------------------
 
 async function init() {
@@ -392,7 +408,7 @@ async function init() {
     iccUrl: new URL('iccs/', PDFJS).href,
   });
   loading.onProgress = ({ loaded, total }) => {
-    if (total) setStatus(`Loading paper … ${Math.min(100, Math.round((loaded / total) * 100))}%`);
+    if (total) setStatus(`Loading ${docLabel} … ${Math.min(100, Math.round((loaded / total) * 100))}%`);
   };
 
   let pdf;
@@ -400,9 +416,10 @@ async function init() {
     pdf = await loading.promise;
   } catch (error) {
     console.error(error);
-    setStatus('The paper could not be loaded. Please try again later.');
+    setStatus(`The ${docLabel} could not be loaded. Please try again later.`);
     return;
   }
+  showPdfDate(pdf);
 
   const proxies = await Promise.all(Array.from({ length: pdf.numPages }, (_, i) => pdf.getPage(i + 1)));
   pages = proxies.map((page, i) => {

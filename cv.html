@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6NLBZHQX19"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6NLBZHQX19');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Curriculum Vitae | Marius Liebald</title>
+<meta name="description" content="Curriculum vitae of Marius Liebald, postdoctoral researcher at the Department of Economic History, Uppsala University.">
+<link rel="canonical" href="https://www.marius-liebald.de/cv.html">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap">
+<link rel="stylesheet" href="font/css/font-awesome.min.css">
+<link rel="stylesheet" href="css/paper.css">
+</head>
+<body class="no-toc">
+<header class="paper-bar">
+  <div class="paper-bar-start">
+    <button type="button" class="toc-toggle" aria-controls="paper-toc" aria-expanded="false" aria-label="Contents"><i class="fa fa-list" aria-hidden="true"></i></button>
+    <a class="paper-bar-logo" href="index.html"><img src="images/logo_name.png?v=2" width="220" height="30" alt="Marius Liebald, home"></a>
+  </div>
+  <div class="pdf-controls">
+    <label class="pdf-page-label" for="pdf-page-input">Page</label>
+    <input id="pdf-page-input" class="pdf-page-input" type="number" inputmode="numeric" min="1" value="1" disabled>
+    <span>of <span class="pdf-total">…</span></span>
+    <span class="pdf-sep" aria-hidden="true"></span>
+    <button type="button" data-zoom="out" aria-label="Zoom out" disabled><i class="fa fa-minus" aria-hidden="true"></i></button>
+    <span class="pdf-zoom-level" aria-live="polite">100%</span>
+    <button type="button" data-zoom="in" aria-label="Zoom in" disabled><i class="fa fa-plus" aria-hidden="true"></i></button>
+    <button type="button" data-zoom="fit" disabled>Fit</button>
+  </div>
+  <div class="paper-bar-end">
+    <a class="paper-back" href="index.html#about"><i class="fa fa-angle-left" aria-hidden="true"></i><span> Home</span></a>
+  </div>
+</header>
+
+<div class="paper-layout">
+  <aside class="paper-info" aria-label="About this CV">
+    <h1>Curriculum Vitae</h1>
+    <p class="paper-authors">Marius Liebald</p>
+    <p class="paper-status" hidden>Last updated <time data-pdf-date></time></p>
+  </aside>
+
+  <nav class="paper-toc" id="paper-toc" aria-label="Contents">
+    <h2>Contents</h2>
+    <ol class="toc-list"></ol>
+  </nav>
+
+  <main class="pdf-viewer" data-pdf="cv.pdf" data-label="CV">
+    <p class="pdf-status" role="status">Loading CV …</p>
+    <div class="pdf-pages"><div class="pdf-pages-inner"></div></div>
+  </main>
+</div>
+
+<script type="module" src="js/paper-viewer.js?v=2"></script>
+</body>
+</html>
